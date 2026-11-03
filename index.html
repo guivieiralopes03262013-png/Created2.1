@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GUARDIAN AI</title>
+<style>
+:root {
+  --site-primary: #123B59;
+  --site-on-primary: #FFFFFF;
+  --site-secondary: #D9F1F4;
+  --site-on-secondary: #123344;
+  --site-background: #F2F7FA;
+  --site-on-background: #142B3A;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--site-font-body); background: light-dark(#F2F7FA,#0C1721); color: light-dark(#142B3A,#E8F2F8); }
+#app { min-height:100vh; width:100%; background-color:var(--site-background); color:var(--site-on-background); border-radius:0; }
+header { background:var(--site-primary); color:var(--site-on-primary); padding:calc(22px * var(--site-spacing-scale)) max(5vw,20px); display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.brand { display:flex; gap:12px; align-items:center; }
+.logo { width:44px;height:44px;border-radius:14px;background:#1B587A;display:grid;place-items:center;font-size:23px;border:1px solid #4A88A5; }
+h1 { font-family:var(--site-font-heading);font-size:calc(23px * var(--site-heading-scale));margin:0;letter-spacing:.08em; }
+header p { margin:4px 0 0;color:#C6DFEC;font-size:12px;letter-spacing:.08em; }
+.status { font-size:12px;padding:8px 11px;border:1px solid #6A91A7;border-radius:999px;color:#D8F6E8;white-space:nowrap; }
+main { max-width:1120px;margin:auto;padding:28px 20px 60px; }
+.hero { background:linear-gradient(120deg,#123B59,#1D6680);color:white;padding:28px;border-radius:calc(22px * var(--site-radius-scale));display:grid;grid-template-columns:1.5fr .8fr;gap:22px;align-items:center; }
+.eyebrow { text-transform:uppercase;letter-spacing:.13em;font-size:11px;color:#A8DCEB;font-weight:700; }
+.hero h2 { font-size:calc(30px * var(--site-heading-scale));line-height:1.12;margin:10px 0; }
+.hero p { color:#D6EAF1;line-height:1.6;margin:0;max-width:620px; }
+.hero-art { min-height:140px;display:grid;place-items:center; }
+.shield { width:118px;height:132px;border:2px solid #7DD5E8;border-radius:48% 48% 55% 55%;display:grid;place-items:center;font-size:58px;box-shadow:0 0 45px #55C9E755; }
+.section-title { display:flex;align-items:end;justify-content:space-between;gap:12px;margin:28px 0 14px; }
+.section-title h3 { margin:0;font-size:18px; }
+.section-title span { font-size:12px;opacity:.65; }
+.grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px; }
+.card { background:light-dark(#FFFFFF,#152634);border:1px solid light-dark(#D9E5EB,#29404F);border-radius:calc(17px * var(--site-radius-scale));padding:18px; }
+.card .ico { font-size:23px; }
+.card h4 { margin:10px 0 6px;font-size:15px; }
+.card p { margin:0;color:light-dark(#526A78,#B7C8D2);font-size:13px;line-height:1.5; }
+button,.linkbtn { border:0;border-radius:11px;padding:10px 13px;background:#D9F1F4;color:#123344;font-weight:700;font-size:12px;cursor:pointer;text-decoration:none;display:inline-block;margin-top:13px; }
+button:hover,.linkbtn:hover { filter:brightness(.96); }
+button.secondary { background:light-dark(#EAF0F4,#263D4B);color:light-dark(#173448,#EAF5FA);border:1px solid light-dark(#D3E0E7,#3A5260); }
+.panel { display:grid;grid-template-columns:1fr 1fr;gap:14px; }
+.panel .card { padding:20px; }
+label {display:block;font-size:12px;font-weight:700;margin:12px 0 5px;}
+input,textarea,select { width:100%;border:1px solid light-dark(#CAD9E1,#3B5362);background:light-dark(#F8FBFC,#0E1C26);color:light-dark(#142B3A,#EAF4F8);padding:11px;border-radius:10px;font:inherit;font-size:13px; }
+textarea {min-height:78px;resize:vertical;}
+.small {font-size:11px!important;line-height:1.5;color:light-dark(#637985,#B6C6CE)!important;}
+.notice {background:light-dark(#FFF7E5,#382D19);border:1px solid light-dark(#EBD69E,#705A2E);color:light-dark(#5E491D,#F7E7B8);padding:13px 15px;border-radius:13px;font-size:12px;line-height:1.5;margin-top:16px;}
+.result {margin-top:12px;padding:12px;border-radius:10px;background:light-dark(#EAF5F7,#17313D);font-size:12px;line-height:1.5;display:none;overflow-wrap:anywhere;}
+ul.clean {padding-left:18px;margin:10px 0 0;font-size:13px;line-height:1.8;}
+a {color:light-dark(#14668B,#8AD7F2);}
+footer {text-align:center;font-size:11px;opacity:.65;padding:24px;}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.hero-art{display:none}.grid{grid-template-columns:1fr 1fr}.panel{grid-template-columns:1fr}header{align-items:flex-start}.status{font-size:10px}}
+@media(max-width:460px){.grid{grid-template-columns:1fr}.hero h2{font-size:25px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+ <div class="brand"><div class="logo">🛡️</div><div><h1>GUARDIAN AI</h1><p>INFORMAÇÃO • SEGURANÇA • AUTONOMIA</p></div></div>
+ <div class="status">● PROTÓTIPO LOCAL</div>
+</header>
+<main>
+ <section class="hero">
+  <div><div class="eyebrow">Seu centro de conhecimento</div><h2>Esteja informado.<br>Proteja sua vida digital.</h2><p>Um painel para aprender sobre segurança online, conhecer seus direitos, encontrar serviços públicos e organizar seus objetivos pessoais.</p></div>
+  <div class="hero-art"><div class="shield">✓</div></div>
+ </section>
+
+ <div class="section-title"><h3>Central de ferramentas</h3><span>Escolha uma área para começar</span></div>
+ <section class="grid">
+  <article class="card"><div class="ico">🔎</div><h4>Verificar um link</h4><p>Faça uma triagem educativa de endereços suspeitos e aprenda a reconhecer sinais de fraude.</p><button onclick="show('linktool')">Analisar endereço</button></article>
+  <article class="card"><div class="ico">🦠</div><h4>Conhecer ameaças</h4><p>Entenda vírus, ransomware, spyware, trojans e como reduzir riscos.</p><button onclick="show('threats')">Abrir guia</button></article>
+  <article class="card"><div class="ico">🧰</div><h4>Plano de proteção</h4><p>Checklist seguro para atualizar, verificar e proteger seus dispositivos.</p><button onclick="show('protect')">Ver checklist</button></article>
+  <article class="card"><div class="ico">🏛️</div><h4>Governo e cidadania</h4><p>Encontre portais oficiais para direitos, serviços, educação e documentos.</p><a class="linkbtn" href="#government">Explorar portais</a></article>
+  <article class="card"><div class="ico">🧭</div><h4>Meu painel pessoal</h4><p>Organize metas, estudos e assuntos que deseja acompanhar sem inserir dados sensíveis.</p><a class="linkbtn" href="#profile">Organizar meu painel</a></article>
+  <article class="card"><div class="ico">📚</div><h4>Aprender e pesquisar</h4><p>Use fontes confiáveis e confira a data, autoria e evidências de cada informação.</p><a class="linkbtn" href="#sources">Ver fontes confiáveis</a></article>
+ </section>
+
+ <section id="linktool">
+  <div class="section-title"><h3>Triagem de endereço suspeito</h3><span>Não é um antivírus</span></div>
+  <div class="card">
+   <p class="small">Cole apenas o endereço público de um site — nunca senhas, códigos, dados bancários ou links privados recebidos por mensagem. A análise abaixo verifica sinais básicos no texto, não visita o site e não confirma se ele contém malware.</p>
+   <label for="url">Endereço do site</label><input id="url" placeholder="https://exemplo.com" autocomplete="off">
+   <button onclick="checkUrl()">Verificar sinais</button>
+   <div id="urlresult" class="result" aria-live="polite"></div>
+  </div>
+ </section>
+
+ <section id="threats">
+  <div class="section-title"><h3>Guia de ameaças digitais</h3><span>Conhecimento defensivo</span></div>
+  <div class="grid">
+   <article class="card"><h4>Vírus e worms</h4><p>Programas maliciosos que podem se espalhar ou alterar arquivos. Mantenha o sistema atualizado e use proteção confiável.</p></article>
+   <article class="card"><h4>Trojan</h4><p>Disfarça-se de aplicativo ou arquivo legítimo. Instale programas apenas de lojas e sites oficiais.</p></article>
+   <article class="card"><h4>Ransomware</h4><p>Bloqueia o acesso a arquivos. Faça backups regulares e não abra anexos inesperados.</p></article>
+   <article class="card"><h4>Spyware</h4><p>Coleta informações sem consentimento. Revise permissões e remova aplicativos desconhecidos.</p></article>
+   <article class="card"><h4>Phishing</h4><p>Mensagens falsas tentam roubar dados. Entre no serviço digitando o endereço oficial no navegador.</p></article>
+   <article class="card"><h4>Adware</h4><p>Exibe anúncios indesejados ou redireciona páginas. Revise extensões e aplicativos instalados.</p></article>
+  </div>
+ </section>
+
+ <section id="protect">
+  <div class="section-title"><h3>Checklist de proteção</h3><span>Marque quando concluir</span></div>
+  <div class="card">
+   <div id="checks">
+    <label><input type="checkbox"> Atualizar o sistema e os aplicativos.</label>
+    <label><input type="checkbox"> Ativar bloqueio de tela e autenticação em duas etapas.</label>
+    <label><input type="checkbox"> Fazer backup dos arquivos importantes.</label>
+    <label><input type="checkbox"> Verificar o aparelho com a proteção de segurança integrada ou um antivírus confiável.</label>
+    <label><input type="checkbox"> Desinstalar aplicativos que não reconheço, com ajuda de um responsável se necessário.</label>
+    <label><input type="checkbox"> Não instalar APKs ou programas de fontes desconhecidas.</label>
+   </div>
+   <p class="small">Se suspeitar de infecção: pare de inserir senhas no aparelho, peça ajuda a um responsável, use outro dispositivo confiável para proteger contas importantes e procure suporte técnico de confiança. Não pague por instruções ou ferramentas enviadas por desconhecidos.</p>
+  </div>
+ </section>
+
+ <section id="government">
+  <div class="section-title"><h3>Governo, direitos e serviços públicos</h3><span>Brasil • fontes oficiais</span></div>
+  <div class="grid">
+   <article class="card"><h4>Portal Gov.br</h4><p>Serviços públicos federais, orientações e acesso a serviços digitais.</p><a class="linkbtn" href="https://www.gov.br/" target="_blank" rel="noopener">Abrir Gov.br ↗</a></article>
+   <article class="card"><h4>Meu INSS</h4><p>Informações e serviços previdenciários. Acesso a dados pessoais somente pelo titular e com segurança.</p><a class="linkbtn" href="https://meu.inss.gov.br/" target="_blank" rel="noopener">Abrir Meu INSS ↗</a></article>
+   <article class="card"><h4>Consumidor.gov.br</h4><p>Canal oficial para registrar e acompanhar reclamações de consumo.</p><a class="linkbtn" href="https://www.consumidor.gov.br/" target="_blank" rel="noopener">Abrir portal ↗</a></article>
+   <article class="card"><h4>Portal da Transparência</h4><p>Consulte informações públicas sobre gastos e administração federal.</p><a class="linkbtn" href="https://portaldatransparencia.gov.br/" target="_blank" rel="noopener">Consultar ↗</a></article>
+   <article class="card"><h4>Direitos da criança e do adolescente</h4><p>Conheça o ECA e os direitos de crianças e adolescentes.</p><a class="linkbtn" href="https://www.gov.br/mdh/pt-br/navegue-por-temas/crianca-e-adolescente" target="_blank" rel="noopener">Ver informações ↗</a></article>
+   <article class="card"><h4>Educação</h4><p>Informações do Ministério da Educação, programas e políticas educacionais.</p><a class="linkbtn" href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener">Abrir MEC ↗</a></article>
+  </div>
+ </section>
+
+ <section id="profile">
+  <div class="section-title"><h3>Meu painel pessoal</h3><span>Opcional • salvo neste navegador</span></div>
+  <div class="panel">
+   <div class="card">
+    <h4>O que quero acompanhar</h4>
+    <p class="small">Preencha somente informações gerais que você se sente confortável em guardar neste aparelho.</p>
+    <label for="nickname">Como quer chamar este painel?</label><input id="nickname" placeholder="Ex.: Meu espaço">
+    <label for="goals">Metas e interesses</label><textarea id="goals" placeholder="Ex.: aprender tecnologia, acompanhar oportunidades de estudo..."></textarea>
+    <label for="topics">Assuntos que quero acompanhar</label><input id="topics" placeholder="Ex.: educação, direitos, segurança digital">
+    <button onclick="saveProfile()">Salvar neste navegador</button> <button class="secondary" onclick="loadProfile()">Carregar</button>
+    <div id="saved" class="result" aria-live="polite"></div>
+   </div>
+   <div class="card">
+    <h4>Privacidade primeiro</h4>
+    <ul class="clean">
+     <li>Não informe CPF, RG, endereço, senhas ou dados bancários aqui.</li>
+     <li>Não envie documentos ou códigos de acesso.</li>
+     <li>Este protótipo não acessa contas do governo nem consulta cadastros pessoais.</li>
+     <li>As notas ficam no armazenamento local deste navegador, se disponível.</li>
+    </ul>
+    <button class="secondary" onclick="clearProfile()">Apagar minhas notas locais</button>
+   </div>
+  </div>
+ </section>
+
+ <section id="sources">
+  <div class="section-title"><h3>Fontes de segurança confiáveis</h3><span>Abra os sites oficiais</span></div>
+  <div class="card">
+   <p><b>CERT.br</b> — cartilhas e orientações de segurança na Internet: <a href="https://cartilha.cert.br/" target="_blank" rel="noopener">cartilha.cert.br ↗</a></p>
+   <p><b>SaferNet Brasil</b> — educação e orientação para uso seguro da Internet: <a href="https://new.safernet.org.br/" target="_blank" rel="noopener">safernet.org.br ↗</a></p>
+   <p><b>Google Safe Browsing</b> — consulta de transparência sobre sites perigosos: <a href="https://transparencyreport.google.com/safe-browsing/search" target="_blank" rel="noopener">consultar ↗</a></p>
+   <p><b>Microsoft Security</b> — informações e suporte de segurança: <a href="https://www.microsoft.com/pt-br/security" target="_blank" rel="noopener">microsoft.com/security ↗</a></p>
+  </div>
+ </section>
+ <div class="notice"><b>Importante:</b> esta é uma demonstração funcional, não uma IA conectada à Internet nem um scanner antivírus. Os links levam a fontes externas oficiais. Nunca compartilhe credenciais. Para acessar contas pessoais ou serviços públicos, use somente os portais oficiais e peça ajuda a um responsável de confiança.</div>
+</main>
+<footer>GUARDIAN AI • Protótipo demonstrativo • Informação clara, privacidade e segurança.</footer>
+</div>
+<script>
+function show(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}
+function checkUrl(){
+ const raw=document.getElementById('url').value.trim(), out=document.getElementById('urlresult');
+ out.style.display='block';
+ if(!raw){out.textContent='Digite um endereço para verificar sinais básicos.';return;}
+ let u; try{u=new URL(raw.includes('://')?raw:'https://'+raw);}catch(e){out.textContent='O formato parece inválido. Confira o endereço sem clicar nele.';return;}
+ const flags=[];
+ if(u.protocol!=='https:') flags.push('Não usa HTTPS.');
+ if(u.username||u.password) flags.push('Contém credenciais embutidas no endereço.');
+ if(u.hostname.startsWith('xn--')||u.hostname.includes('.xn--')) flags.push('Usa caracteres internacionais codificados; confira se o domínio não imita outro.');
+ if(u.hostname.split('.').length>4) flags.push('Possui muitos subdomínios; confira o domínio principal.');
+ if(/login|verify|secure|account|bonus|premio|gift|pix/i.test(u.hostname)) flags.push('O nome contém termos comuns em páginas que podem tentar chamar atenção — isso, sozinho, não prova fraude.');
+ out.innerHTML='<b>Triagem textual — não é veredito de segurança.</b><br>'+ (flags.length?flags.map(x=>'• '+x).join('<br>'):'Nenhum dos sinais simples configurados foi encontrado.') + '<br><br>Não abra o site só por causa deste resultado. Confira o domínio por um canal oficial independente.';
+}
+function saveProfile(){
+ const data={nickname:document.getElementById('nickname').value,goals:document.getElementById('goals').value,topics:document.getElementById('topics').value};
+ try{localStorage.setItem('guardianProfile',JSON.stringify(data));document.getElementById('saved').textContent='Notas salvas neste navegador.';}
+ catch(e){document.getElementById('saved').textContent='Não foi possível salvar neste navegador. Você ainda pode usar o painel sem salvar.';}
+ document.getElementById('saved').style.display='block';
+}
+function loadProfile(){
+ try{const d=JSON.parse(localStorage.getItem('guardianProfile')||'{}');document.getElementById('nickname').value=d.nickname||'';document.getElementById('goals').value=d.goals||'';document.getElementById('topics').value=d.topics||'';const s=document.getElementById('saved');s.textContent='Notas carregadas.';s.style.display='block';}
+ catch(e){alert('Não há notas salvas neste navegador.');}
+}
+function clearProfile(){
+ try{localStorage.removeItem('guardianProfile');}catch(e){}
+ ['nickname','goals','topics'].forEach(id=>document.getElementById(id).value='');
+ const s=document.getElementById('saved');s.textContent='Notas locais apagadas, se havia alguma.';s.style.display='block';
+}
+</script>
+</body>
+</html>'''
+with open(path, "w", encoding="utf-8") as f:
+    f.write(html)
+import os
+print(os.path.getsize(path))
+path = "/mnt/data/guardian_ai_preview.html"
+html = r'''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GUARDIAN AI</title>
+<style>
+:root {
+  --site-primary: #123B59;
+  --site-on-primary: #FFFFFF;
+  --site-secondary: #D9F1F4;
+  --site-on-secondary: #123344;
+  --site-background: #F2F7FA;
+  --site-on-background: #142B3A;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--site-font-body); background: light-dark(#F2F7FA,#0C1721); color: light-dark(#142B3A,#E8F2F8); }
+#app { min-height:100vh; width:100%; background-color:var(--site-background); color:var(--site-on-background); border-radius:0; }
+header { background:var(--site-primary); color:var(--site-on-primary); padding:calc(22px * var(--site-spacing-scale)) max(5vw,20px); display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.brand { display:flex; gap:12px; align-items:center; }
+.logo { width:44px;height:44px;border-radius:14px;background:#1B587A;display:grid;place-items:center;font-size:23px;border:1px solid #4A88A5; }
+h1 { font-family:var(--site-font-heading);font-size:calc(23px * var(--site-heading-scale));margin:0;letter-spacing:.08em; }
+header p { margin:4px 0 0;color:#C6DFEC;font-size:12px;letter-spacing:.08em; }
+.status { font-size:12px;padding:8px 11px;border:1px solid #6A91A7;border-radius:999px;color:#D8F6E8;white-space:nowrap; }
+main { max-width:1120px;margin:auto;padding:28px 20px 60px; }
+.hero { background:linear-gradient(120deg,#123B59,#1D6680);color:white;padding:28px;border-radius:calc(22px * var(--site-radius-scale));display:grid;grid-template-columns:1.5fr .8fr;gap:22px;align-items:center; }
+.eyebrow { text-transform:uppercase;letter-spacing:.13em;font-size:11px;color:#A8DCEB;font-weight:700; }
+.hero h2 { font-size:calc(30px * var(--site-heading-scale));line-height:1.12;margin:10px 0; }
+.hero p { color:#D6EAF1;line-height:1.6;margin:0;max-width:620px; }
+.hero-art { min-height:140px;display:grid;place-items:center; }
+.shield { width:118px;height:132px;border:2px solid #7DD5E8;border-radius:48% 48% 55% 55%;display:grid;place-items:center;font-size:58px;box-shadow:0 0 45px #55C9E755; }
+.section-title { display:flex;align-items:end;justify-content:space-between;gap:12px;margin:28px 0 14px; }
+.section-title h3 { margin:0;font-size:18px; }
+.section-title span { font-size:12px;opacity:.65; }
+.grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px; }
+.card { background:light-dark(#FFFFFF,#152634);border:1px solid light-dark(#D9E5EB,#29404F);border-radius:calc(17px * var(--site-radius-scale));padding:18px; }
+.card .ico { font-size:23px; }
+.card h4 { margin:10px 0 6px;font-size:15px; }
+.card p { margin:0;color:light-dark(#526A78,#B7C8D2);font-size:13px;line-height:1.5; }
+button,.linkbtn { border:0;border-radius:11px;padding:10px 13px;background:#D9F1F4;color:#123344;font-weight:700;font-size:12px;cursor:pointer;text-decoration:none;display:inline-block;margin-top:13px; }
+button:hover,.linkbtn:hover { filter:brightness(.96); }
+button.secondary { background:light-dark(#EAF0F4,#263D4B);color:light-dark(#173448,#EAF5FA);border:1px solid light-dark(#D3E0E7,#3A5260); }
+.panel { display:grid;grid-template-columns:1fr 1fr;gap:14px; }
+.panel .card { padding:20px; }
+label {display:block;font-size:12px;font-weight:700;margin:12px 0 5px;}
+input,textarea,select { width:100%;border:1px solid light-dark(#CAD9E1,#3B5362);background:light-dark(#F8FBFC,#0E1C26);color:light-dark(#142B3A,#EAF4F8);padding:11px;border-radius:10px;font:inherit;font-size:13px; }
+textarea {min-height:78px;resize:vertical;}
+.small {font-size:11px!important;line-height:1.5;color:light-dark(#637985,#B6C6CE)!important;}
+.notice {background:light-dark(#FFF7E5,#382D19);border:1px solid light-dark(#EBD69E,#705A2E);color:light-dark(#5E491D,#F7E7B8);padding:13px 15px;border-radius:13px;font-size:12px;line-height:1.5;margin-top:16px;}
+.result {margin-top:12px;padding:12px;border-radius:10px;background:light-dark(#EAF5F7,#17313D);font-size:12px;line-height:1.5;display:none;overflow-wrap:anywhere;}
+ul.clean {padding-left:18px;margin:10px 0 0;font-size:13px;line-height:1.8;}
+a {color:light-dark(#14668B,#8AD7F2);}
+footer {text-align:center;font-size:11px;opacity:.65;padding:24px;}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.hero-art{display:none}.grid{grid-template-columns:1fr 1fr}.panel{grid-template-columns:1fr}header{align-items:flex-start}.status{font-size:10px}}
+@media(max-width:460px){.grid{grid-template-columns:1fr}.hero h2{font-size:25px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+ <div class="brand"><div class="logo">🛡️</div><div><h1>GUARDIAN AI</h1><p>INFORMAÇÃO • SEGURANÇA • AUTONOMIA</p></div></div>
+ <div class="status">● PROTÓTIPO LOCAL</div>
+</header>
+<main>
+ <section class="hero">
+  <div><div class="eyebrow">Seu centro de conhecimento</div><h2>Esteja informado.<br>Proteja sua vida digital.</h2><p>Um painel para aprender sobre segurança online, conhecer seus direitos, encontrar serviços públicos e organizar seus objetivos pessoais.</p></div>
+  <div class="hero-art"><div class="shield">✓</div></div>
+ </section>
+
+ <div class="section-title"><h3>Central de ferramentas</h3><span>Escolha uma área para começar</span></div>
+ <section class="grid">
+  <article class="card"><div class="ico">🔎</div><h4>Verificar um link</h4><p>Faça uma triagem educativa de endereços suspeitos e aprenda a reconhecer sinais de fraude.</p><button onclick="show('linktool')">Analisar endereço</button></article>
+  <article class="card"><div class="ico">🦠</div><h4>Conhecer ameaças</h4><p>Entenda vírus, ransomware, spyware, trojans e como reduzir riscos.</p><button onclick="show('threats')">Abrir guia</button></article>
+  <article class="card"><div class="ico">🧰</div><h4>Plano de proteção</h4><p>Checklist seguro para atualizar, verificar e proteger seus dispositivos.</p><button onclick="show('protect')">Ver checklist</button></article>
+  <article class="card"><div class="ico">🏛️</div><h4>Governo e cidadania</h4><p>Encontre portais oficiais para direitos, serviços, educação e documentos.</p><a class="linkbtn" href="#government">Explorar portais</a></article>
+  <article class="card"><div class="ico">🧭</div><h4>Meu painel pessoal</h4><p>Organize metas, estudos e assuntos que deseja acompanhar sem inserir dados sensíveis.</p><a class="linkbtn" href="#profile">Organizar meu painel</a></article>
+  <article class="card"><div class="ico">📚</div><h4>Aprender e pesquisar</h4><p>Use fontes confiáveis e confira a data, autoria e evidências de cada informação.</p><a class="linkbtn" href="#sources">Ver fontes confiáveis</a></article>
+ </section>
+
+ <section id="linktool">
+  <div class="section-title"><h3>Triagem de endereço suspeito</h3><span>Não é um antivírus</span></div>
+  <div class="card">
+   <p class="small">Cole apenas o endereço público de um site — nunca senhas, códigos, dados bancários ou links privados recebidos por mensagem. A análise abaixo verifica sinais básicos no texto, não visita o site e não confirma se ele contém malware.</p>
+   <label for="url">Endereço do site</label><input id="url" placeholder="https://exemplo.com" autocomplete="off">
+   <button onclick="checkUrl()">Verificar sinais</button>
+   <div id="urlresult" class="result" aria-live="polite"></div>
+  </div>
+ </section>
+
+ <section id="threats">
+  <div class="section-title"><h3>Guia de ameaças digitais</h3><span>Conhecimento defensivo</span></div>
+  <div class="grid">
+   <article class="card"><h4>Vírus e worms</h4><p>Programas maliciosos que podem se espalhar ou alterar arquivos. Mantenha o sistema atualizado e use proteção confiável.</p></article>
+   <article class="card"><h4>Trojan</h4><p>Disfarça-se de aplicativo ou arquivo legítimo. Instale programas apenas de lojas e sites oficiais.</p></article>
+   <article class="card"><h4>Ransomware</h4><p>Bloqueia o acesso a arquivos. Faça backups regulares e não abra anexos inesperados.</p></article>
+   <article class="card"><h4>Spyware</h4><p>Coleta informações sem consentimento. Revise permissões e remova aplicativos desconhecidos.</p></article>
+   <article class="card"><h4>Phishing</h4><p>Mensagens falsas tentam roubar dados. Entre no serviço digitando o endereço oficial no navegador.</p></article>
+   <article class="card"><h4>Adware</h4><p>Exibe anúncios indesejados ou redireciona páginas. Revise extensões e aplicativos instalados.</p></article>
+  </div>
+ </section>
+
+ <section id="protect">
+  <div class="section-title"><h3>Checklist de proteção</h3><span>Marque quando concluir</span></div>
+  <div class="card">
+   <div id="checks">
+    <label><input type="checkbox"> Atualizar o sistema e os aplicativos.</label>
+    <label><input type="checkbox"> Ativar bloqueio de tela e autenticação em duas etapas.</label>
+    <label><input type="checkbox"> Fazer backup dos arquivos importantes.</label>
+    <label><input type="checkbox"> Verificar o aparelho com a proteção de segurança integrada ou um antivírus confiável.</label>
+    <label><input type="checkbox"> Desinstalar aplicativos que não reconheço, com ajuda de um responsável se necessário.</label>
+    <label><input type="checkbox"> Não instalar APKs ou programas de fontes desconhecidas.</label>
+   </div>
+   <p class="small">Se suspeitar de infecção: pare de inserir senhas no aparelho, peça ajuda a um responsável, use outro dispositivo confiável para proteger contas importantes e procure suporte técnico de confiança. Não pague por instruções ou ferramentas enviadas por desconhecidos.</p>
+  </div>
+ </section>
+
+ <section id="government">
+  <div class="section-title"><h3>Governo, direitos e serviços públicos</h3><span>Brasil • fontes oficiais</span></div>
+  <div class="grid">
+   <article class="card"><h4>Portal Gov.br</h4><p>Serviços públicos federais, orientações e acesso a serviços digitais.</p><a class="linkbtn" href="https://www.gov.br/" target="_blank" rel="noopener">Abrir Gov.br ↗</a></article>
+   <article class="card"><h4>Meu INSS</h4><p>Informações e serviços previdenciários. Acesso a dados pessoais somente pelo titular e com segurança.</p><a class="linkbtn" href="https://meu.inss.gov.br/" target="_blank" rel="noopener">Abrir Meu INSS ↗</a></article>
+   <article class="card"><h4>Consumidor.gov.br</h4><p>Canal oficial para registrar e acompanhar reclamações de consumo.</p><a class="linkbtn" href="https://www.consumidor.gov.br/" target="_blank" rel="noopener">Abrir portal ↗</a></article>
+   <article class="card"><h4>Portal da Transparência</h4><p>Consulte informações públicas sobre gastos e administração federal.</p><a class="linkbtn" href="https://portaldatransparencia.gov.br/" target="_blank" rel="noopener">Consultar ↗</a></article>
+   <article class="card"><h4>Direitos da criança e do adolescente</h4><p>Conheça o ECA e os direitos de crianças e adolescentes.</p><a class="linkbtn" href="https://www.gov.br/mdh/pt-br/navegue-por-temas/crianca-e-adolescente" target="_blank" rel="noopener">Ver informações ↗</a></article>
+   <article class="card"><h4>Educação</h4><p>Informações do Ministério da Educação, programas e políticas educacionais.</p><a class="linkbtn" href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener">Abrir MEC ↗</a></article>
+  </div>
+ </section>
+
+ <section id="profile">
+  <div class="section-title"><h3>Meu painel pessoal</h3><span>Opcional • salvo neste navegador</span></div>
+  <div class="panel">
+   <div class="card">
+    <h4>O que quero acompanhar</h4>
+    <p class="small">Preencha somente informações gerais que você se sente confortável em guardar neste aparelho.</p>
+    <label for="nickname">Como quer chamar este painel?</label><input id="nickname" placeholder="Ex.: Meu espaço">
+    <label for="goals">Metas e interesses</label><textarea id="goals" placeholder="Ex.: aprender tecnologia, acompanhar oportunidades de estudo..."></textarea>
+    <label for="topics">Assuntos que quero acompanhar</label><input id="topics" placeholder="Ex.: educação, direitos, segurança digital">
+    <button onclick="saveProfile()">Salvar neste navegador</button> <button class="secondary" onclick="loadProfile()">Carregar</button>
+    <div id="saved" class="result" aria-live="polite"></div>
+   </div>
+   <div class="card">
+    <h4>Privacidade primeiro</h4>
+    <ul class="clean">
+     <li>Não informe CPF, RG, endereço, senhas ou dados bancários aqui.</li>
+     <li>Não envie documentos ou códigos de acesso.</li>
+     <li>Este protótipo não acessa contas do governo nem consulta cadastros pessoais.</li>
+     <li>As notas ficam no armazenamento local deste navegador, se disponível.</li>
+    </ul>
+    <button class="secondary" onclick="clearProfile()">Apagar minhas notas locais</button>
+   </div>
+  </div>
+ </section>
+
+ <section id="sources">
+  <div class="section-title"><h3>Fontes de segurança confiáveis</h3><span>Abra os sites oficiais</span></div>
+  <div class="card">
+   <p><b>CERT.br</b> — cartilhas e orientações de segurança na Internet: <a href="https://cartilha.cert.br/" target="_blank" rel="noopener">cartilha.cert.br ↗</a></p>
+   <p><b>SaferNet Brasil</b> — educação e orientação para uso seguro da Internet: <a href="https://new.safernet.org.br/" target="_blank" rel="noopener">safernet.org.br ↗</a></p>
+   <p><b>Google Safe Browsing</b> — consulta de transparência sobre sites perigosos: <a href="https://transparencyreport.google.com/safe-browsing/search" target="_blank" rel="noopener">consultar ↗</a></p>
+   <p><b>Microsoft Security</b> — informações e suporte de segurança: <a href="https://www.microsoft.com/pt-br/security" target="_blank" rel="noopener">microsoft.com/security ↗</a></p>
+  </div>
+ </section>
+ <div class="notice"><b>Importante:</b> esta é uma demonstração funcional, não uma IA conectada à Internet nem um scanner antivírus. Os links levam a fontes externas oficiais. Nunca compartilhe credenciais. Para acessar contas pessoais ou serviços públicos, use somente os portais oficiais e peça ajuda a um responsável de confiança.</div>
+</main>
+<footer>GUARDIAN AI • Protótipo demonstrativo • Informação clara, privacidade e segurança.</footer>
+</div>
+<script>
+function show(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}
+function checkUrl(){
+ const raw=document.getElementById('url').value.trim(), out=document.getElementById('urlresult');
+ out.style.display='block';
+ if(!raw){out.textContent='Digite um endereço para verificar sinais básicos.';return;}
+ let u; try{u=new URL(raw.includes('://')?raw:'https://'+raw);}catch(e){out.textContent='O formato parece inválido. Confira o endereço sem clicar nele.';return;}
+ const flags=[];
+ if(u.protocol!=='https:') flags.push('Não usa HTTPS.');
+ if(u.username||u.password) flags.push('Contém credenciais embutidas no endereço.');
+ if(u.hostname.startsWith('xn--')||u.hostname.includes('.xn--')) flags.push('Usa caracteres internacionais codificados; confira se o domínio não imita outro.');
+ if(u.hostname.split('.').length>4) flags.push('Possui muitos subdomínios; confira o domínio principal.');
+ if(/login|verify|secure|account|bonus|premio|gift|pix/i.test(u.hostname)) flags.push('O nome contém termos comuns em páginas que podem tentar chamar atenção — isso, sozinho, não prova fraude.');
+ out.innerHTML='<b>Triagem textual — não é veredito de segurança.</b><br>'+ (flags.length?flags.map(x=>'• '+x).join('<br>'):'Nenhum dos sinais simples configurados foi encontrado.') + '<br><br>Não abra o site só por causa deste resultado. Confira o domínio por um canal oficial independente.';
+}
+function saveProfile(){
+ const data={nickname:document.getElementById('nickname').value,goals:document.getElementById('goals').value,topics:document.getElementById('topics').value};
+ try{localStorage.setItem('guardianProfile',JSON.stringify(data));document.getElementById('saved').textContent='Notas salvas neste navegador.';}
+ catch(e){document.getElementById('saved').textContent='Não foi possível salvar neste navegador. Você ainda pode usar o painel sem salvar.';}
+ document.getElementById('saved').style.display='block';
+}
+function loadProfile(){
+ try{const d=JSON.parse(localStorage.getItem('guardianProfile')||'{}');document.getElementById('nickname').value=d.nickname||'';document.getElementById('goals').value=d.goals||'';document.getElementById('topics').value=d.topics||'';const s=document.getElementById('saved');s.textContent='Notas carregadas.';s.style.display='block';}
+ catch(e){alert('Não há notas salvas neste navegador.');}
+}
+function clearProfile(){
+ try{localStorage.removeItem('guardianProfile');}catch(e){}
+ ['nickname','goals','topics'].forEach(id=>document.getElementById(id).value='');
+ const s=document.getElementById('saved');s.textContent='Notas locais apagadas, se havia alguma.';s.style.display='block';
+}
+</script>
+</html>
